@@ -28,8 +28,9 @@ using namespace std;
 */
 
 void bienvenida();
-void tablero();
-void entradas();
+void tablero(string* = NULL);
+string *entradas();
+bool validPosition(string, string = "", string = "");
 
 string upperString(string s)
 {
@@ -38,62 +39,11 @@ string upperString(string s)
     return s;
 }
 
-bool validPosition(string position, string positionTwo, string positionThree) {
-
-    position = upperString(position);
-    positionTwo = upperString(positionTwo);
-    positionThree = upperString(positionThree);
-
-    // Condicion 1. Estar en el tablero.
-
-        // - Extraer la fila y columna de la entrada en position
-    
-    char row = position[0];
-    char column = position[1];
-
-    bool badRow = row <= 48 || row >= 57; // La fila esta entre 1 y 8 (En codigo ASCII)
-    bool badColumn = column <= 64 || column >= 73; // La fila esta entre A y H (En codigo ASCII)
-
-    // Condicion 2. No ser la posicion de otra ficha.
-
-    bool duplicate = position == positionTwo || position == positionThree;
-
-    if (badRow || badColumn || duplicate) {
-        cout << "ERROR: Entrada Invalida!!" << endl;
-        
-        if (badRow) {
-            cout << "* La fila debe estar entre 1 y 8" << endl;
-            system("pause");
-        }
-        else if (badColumn) {
-            cout << "* La columna debe estar entre A y H" << endl;
-            system("pause");
-        }
-        else if (duplicate) {
-            cout << "* Dos fichas no pueden estar en la misma posicion";
-        }
-
-        cout << "\n";
-        return false;
-    }
-
-    return true;
-}
-
 int main() {
-
-    // Vista de bienvenida
     bienvenida();
 
-    // Imprime el tablero
-
-    // Se piden entradas
-    // Las torres y la reina
-    // Se validan las entradas *******
-
-    // Se imprimen las fichas en sus posiciones en el tablero
-
-    // Se imprimen las posibles jugadas en el tablero
+    // Mostrar tablero con jugadas
+    tablero(entradas());
 }
 
 void bienvenida() {
@@ -101,13 +51,10 @@ void bienvenida() {
 
     cout << "Bienvenido al proyecto de Ajedrez de IDS344" << endl;
     cout << "\nNomenclatura: " << endl;
-    cout<<"-  X = Cuadro blanco"<<endl;
-    cout<<"-  Espacio en blanco = Cuadro negro"<<endl;
-    cout<<"-  TN = Torre negra"<<endl;
-    cout<<"-  RB = Reina blanca"<<endl;
-    cout<<"\nPara moverse :"<<endl;
-    cout<<"  1ro. Escribe la fila y columna de la ficha que deseas mover."<<endl;
-    cout<<"  2do. Escribe la fila y columna de hacia donde la deseas mover."<<endl;
+    cout<<"-  T = Torre negra"<<endl;
+    cout<<"-  R = Reina blanca"<<endl;
+    cout<<"\nPara colocar fichas :"<<endl;
+    cout<<"  Escribe la fila (1-9) y columna (A-H) donde colocaras la ficha."<<endl;
 
     char opcion;
 
@@ -118,44 +65,32 @@ void bienvenida() {
 
     if (opcion == 'Y') {
         tablero();
-        entradas();
     } 
     else return;
-    
 }
 
-void tablero() {
-    system("cls");
-
-    cout << "Tablero:\n\n";
+void tablero(string* jugada) {
 
     int length = 8, width = 8, row, column;
 
-    // string tablero[length][width];
+    system("cls");
+
+    cout << "Tablero:\n\n";
 
     // * IMPRIMIR FILAS Y COLUMNAS DEL TABLERO *
 
     for(row = 0; row < length; row++)
     {
-        int index = 0;
-        while(index < 1) {
-            if (index == 0) {
-                cout << row + 1 << ".: ";
-            } else {
-                cout << "    ";
-            }
+        cout << row + 1 << ".: ";
 
-            for(column = 0; column < width; column++)
-            {
-                cout << "[ ]";
-            }
-            cout << "\n";
-
-            index++;
+        for(column = 0; column < width; column++)
+        {
+            cout << "[ ]";
         }
+        cout << "\n";
     }
 
-    // * IMPRIMIR NUMERO DE COLUMNA DEBAJO *
+    // * IMPRIMIR COLUMNA DEBAJO *
 
     int index = 0;
 
@@ -201,25 +136,74 @@ void tablero() {
 
 }
 
-
-void entradas() {
+string *entradas() {
     string torreUno, torreDos, reina;
+
+    string *lista = new string[3];
 
     do {
         cout << "Ingrese la posicion de la primera torre: ";
         cin >> torreUno;
 
-    } while (!validPosition(torreUno, "", ""));
+    } while (!validPosition(torreUno));
 
     do {
         cout << "Ingrese la posicion de la segunda torre: ";
         cin >> torreDos;
 
-    } while (!validPosition(torreDos, torreUno, ""));
+    } while (!validPosition(torreDos, torreUno));
 
     do {
         cout << "Ingrese la posicion de la reina: ";
         cin >> reina;
 
     } while (!validPosition(reina, torreUno, torreDos));
+
+    lista[0] = upperString(torreUno);
+    lista[1] = upperString(torreDos);
+    lista[2] = upperString(reina);
+
+    return lista;
+}
+
+bool validPosition(string position, string positionTwo, string positionThree) {
+
+    position = upperString(position);
+    positionTwo = upperString(positionTwo);
+    positionThree = upperString(positionThree);
+
+    // Condicion 1. Estar en el tablero.
+
+        // - Extraer la fila y columna de la entrada en position
+    
+    char row = position[0];
+    char column = position[1];
+
+    bool badRow = row <= 48 || row >= 57; // La fila esta entre 1 y 8 (En codigo ASCII)
+    bool badColumn = column <= 64 || column >= 73; // La fila esta entre A y H (En codigo ASCII)
+
+    // Condicion 2. No ser la posicion de otra ficha.
+
+    bool duplicate = position == positionTwo || position == positionThree;
+
+    if (badRow || badColumn || duplicate) {
+        cout << "\nERROR: Entrada Invalida!!" << endl;
+        
+        if (badRow) {
+            cout << "* La fila debe estar entre 1 y 8" << endl;
+            system("pause");
+        }
+        else if (badColumn) {
+            cout << "* La columna debe estar entre A y H" << endl;
+            system("pause");
+        }
+        else if (duplicate) {
+            cout << "* Dos fichas no pueden estar en la misma posicion";
+        }
+
+        cout << "\n";
+        return false;
+    }
+
+    return true;
 }
