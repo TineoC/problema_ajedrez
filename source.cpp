@@ -181,11 +181,7 @@ void tablero() {
 
 void entradas() {
     string torreUno, torreDos, reina;
-
-    char torreUnoFila, torreUnoColumna, torreDosFila, torreDosColumna, reinaFila, reinaColumna;
-
-    bool filaInvalida, columnaInvalida;
-
+    
     do {
         cout << "Ingrese la posicion de la primera torre: ";
         cin >> torreUno;
@@ -203,13 +199,4 @@ void entradas() {
         cin >> reina;
 
     } while (!validPosition(reina, torreUno, torreDos));
-
-
-    cout << "Primera torre: " << torreUno << endl;
-    cout << "- Fila: " << torreUnoFila << endl;
-    cout << "- Columna: " << torreUnoColumna << endl;
-
-    cout << "Segunda torre: " << torreDos << endl;
-    cout << "- Fila: " << torreDosFila << endl;
-    cout << "- Columna: " << torreDosColumna << endl;
 }
