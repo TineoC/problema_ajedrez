@@ -41,103 +41,6 @@ class GamePiece
 		char mPieceColor;
 };
 
-class PawnPiece : public GamePiece
-{
-	public:
-		PawnPiece(char PieceColor) : GamePiece(PieceColor) {}
-		~PawnPiece() {}
-	private:
-		virtual char GetPiece() {
-			return 'P';
-		}
-		bool AreSquaresLegal(int iSrcRow, int iSrcCol, int iDestRow, int iDestCol, GamePiece* GameBoard[8][8]) {
-			GamePiece* qpDest = GameBoard[iDestRow][iDestCol];
-			if (qpDest == 0) {
-				// Destination square is unoccupied
-				if (iSrcCol == iDestCol) {
-					if (GetColor() == 'W') {
-						if (iDestRow == iSrcRow + 1) {
-							return true;
-						}
-					} else {
-						if (iDestRow == iSrcRow - 1) {
-							return true;
-						}
-					}
-				}
-			} else {
-				// Dest holds piece of opposite color
-				if ((iSrcCol == iDestCol + 1) || (iSrcCol == iDestCol - 1)) {
-					if (GetColor() == 'W') {
-						if (iDestRow == iSrcRow + 1) {
-							return true;
-						}
-					} else {
-						if (iDestRow == iSrcRow - 1) {
-							return true;
-						}
-					}
-				}
-			}
-			return false;
-		}
-};
-
-class KnightPiece : public GamePiece
-{
-	public:
-		KnightPiece(char PieceColor) : GamePiece(PieceColor) {}
-		~KnightPiece() {}
-	private:
-		virtual char GetPiece() {
-			return 'N';
-		}
-		bool AreSquaresLegal(int iSrcRow, int iSrcCol, int iDestRow, int iDestCol, GamePiece* GameBoard[8][8]) {
-			// Destination square is unoccupied or occupied by opposite color
-			if ((iSrcCol == iDestCol + 1) || (iSrcCol == iDestCol - 1)) {
-				if ((iSrcRow == iDestRow + 2) || (iSrcRow == iDestRow - 2)) {
-					return true;
-				}
-			}
-			if ((iSrcCol == iDestCol + 2) || (iSrcCol == iDestCol - 2)) {
-				if ((iSrcRow == iDestRow + 1) || (iSrcRow == iDestRow - 1)) {
-					return true;
-				}
-			}
-			return false;
-		}
-};
-
-class BishopPiece : public GamePiece
-{
-	public:
-		BishopPiece(char PieceColor) : GamePiece(PieceColor) {}
-		~BishopPiece() {}
-	private:
-		virtual char GetPiece() {
-			return 'B';
-		}
-		bool AreSquaresLegal(int iSrcRow, int iSrcCol, int iDestRow, int iDestCol, GamePiece* GameBoard[8][8]) {
-			if ((iDestCol - iSrcCol == iDestRow - iSrcRow) || (iDestCol - iSrcCol == iSrcRow - iDestRow)) {
-				// Make sure that all invervening squares are empty
-				int iRowOffset = (iDestRow - iSrcRow > 0) ? 1 : -1;
-				int iColOffset = (iDestCol - iSrcCol > 0) ? 1 : -1;
-				int iCheckRow;
-				int iCheckCol;
-				for (iCheckRow = iSrcRow + iRowOffset, iCheckCol = iSrcCol + iColOffset;
-					iCheckRow !=  iDestRow;
-					iCheckRow = iCheckRow + iRowOffset, iCheckCol = iCheckCol + iColOffset)
-				{
-					if (GameBoard[iCheckRow][iCheckCol] != 0) {
-						return false;
-					}
-				}
-				return true;
-			}
-			return false;
-		}
-};
-
 class RookPiece : public GamePiece
 {
 	public:
@@ -219,27 +122,6 @@ class QueenPiece : public GamePiece
 		}
 };
 
-class KingPiece : public GamePiece
-{
-	public:
-		KingPiece(char PieceColor) : GamePiece(PieceColor) {}
-		~KingPiece() {}
-	private:
-		virtual char GetPiece() {
-			return 'K';
-		}
-		bool AreSquaresLegal(int iSrcRow, int iSrcCol, int iDestRow, int iDestCol, GamePiece* GameBoard[8][8]) {
-			int iRowDelta = iDestRow - iSrcRow;
-			int iColDelta = iDestCol - iSrcCol;
-			if (((iRowDelta >= -1) && (iRowDelta <= 1)) &&
-				((iColDelta >= -1) && (iColDelta <= 1)))
-			{
-				return true;
-			}
-			return false;
-		}
-};
-
 class CBoard
 {
 	public:
@@ -250,28 +132,12 @@ class CBoard
 				}
 			}
 			// Allocate and place black pieces
-			for (int iCol = 0; iCol < 8; ++iCol) {
-				MainGameBoard[6][iCol] = new PawnPiece('B');
-			}
 			MainGameBoard[7][0] = new RookPiece('B');
-			MainGameBoard[7][1] = new KnightPiece('B');
-			MainGameBoard[7][2] = new BishopPiece('B');
-			MainGameBoard[7][3] = new KingPiece('B');
 			MainGameBoard[7][4] = new QueenPiece('B');
-			MainGameBoard[7][5] = new BishopPiece('B');
-			MainGameBoard[7][6] = new KnightPiece('B');
 			MainGameBoard[7][7] = new RookPiece('B');
 			// Allocate and place white pieces
-			for (int iCol = 0; iCol < 8; ++iCol) {
-				MainGameBoard[1][iCol] = new PawnPiece('W');
-			}
 			MainGameBoard[0][0] = new RookPiece('W');
-			MainGameBoard[0][1] = new KnightPiece('W');
-			MainGameBoard[0][2] = new BishopPiece('W');
-			MainGameBoard[0][3] = new KingPiece('W');
 			MainGameBoard[0][4] = new QueenPiece('W');
-			MainGameBoard[0][5] = new BishopPiece('W');
-			MainGameBoard[0][6] = new KnightPiece('W');
 			MainGameBoard[0][7] = new RookPiece('W');
 		}
 		~CBoard() {
@@ -448,7 +314,7 @@ public:
             
 
             // Get input and convert to coordinates
-            cout << mcPlayerTurn << "'s Move: ";
+            cout << "Escribe la posicion de la primera torre: ";
             int iStartMove;
             cin >> iStartMove;
             int iStartRow = (iStartMove / 10) - 1;
