@@ -44,6 +44,8 @@ int main() {
 
     // Mostrar tablero con jugadas
     tablero(entradas());
+
+    system("pause");
 }
 
 void bienvenida() {
@@ -73,11 +75,61 @@ void tablero(string* jugada) {
 
     int length = 8, width = 8, row, column;
 
+    char tablero[length][width] = {0};
+
+    if (jugada != NULL) {
+        // Si existen elementos en jugada
+
+        int index = 0;
+
+        while(index < 3) {
+            int fila = jugada[index][0] - '1';
+            int columna;
+            
+            switch(jugada[index][1]) {
+                case 'A':
+                    columna = 0;
+                    break;
+                case 'B':
+                    columna = 1;
+                    break;
+                case 'C':
+                    columna = 2;
+                    break;
+                case 'D':
+                    columna = 3;
+                    break;
+                case 'E':
+                    columna = 4;
+                    break;
+                case 'F':
+                    columna = 5;
+                    break;
+                case 'G':
+                    columna = 6;
+                    break;
+                case 'H':
+                    columna = 7;
+                    break;
+            };
+
+            if (index < 2) {
+                tablero[fila][columna] = 'T';
+            } else {
+                tablero[fila][columna] = 'R';
+            }
+
+            index++;
+        }
+    }
+
     system("cls");
 
     cout << "Tablero:\n\n";
 
     // * IMPRIMIR FILAS Y COLUMNAS DEL TABLERO *
+
+    int filaReina = -1, columnaReina = -1;
 
     for(row = 0; row < length; row++)
     {
@@ -85,7 +137,26 @@ void tablero(string* jugada) {
 
         for(column = 0; column < width; column++)
         {
-            cout << "[ ]";
+            bool jugadaValida = false;
+            jugadaValida = (row == filaReina) || (column == columnaReina);
+
+            if (tablero[row][column] == 'T') {
+                cout << "[T]";
+            }
+            else if (tablero[row][column] == 'R') {
+                filaReina = row;
+                columnaReina = column;
+                cout << "[R]";
+            }
+            else if (jugadaValida) {
+                cout << "[V]";
+            }
+            // else if (jugadaNoValida) {
+            //     cout << "[X]";
+            // }
+            else {
+                cout << "[ ]";
+            }    
         }
         cout << "\n";
     }
@@ -186,22 +257,28 @@ bool validPosition(string position, string positionTwo, string positionThree) {
 
     bool duplicate = position == positionTwo || position == positionThree;
 
-    if (badRow || badColumn || duplicate) {
+    // Condicion 3. No puede ser mayor a 2 caracteres
+
+    bool sizeError = position.size() > 2;
+
+    if (badRow || badColumn || duplicate || sizeError) {
         cout << "\nERROR: Entrada Invalida!!" << endl;
         
         if (badRow) {
-            cout << "* La fila debe estar entre 1 y 8" << endl;
-            system("pause");
+            cout << "* La fila debe estar entre 1 y 8." << endl;
         }
         else if (badColumn) {
-            cout << "* La columna debe estar entre A y H" << endl;
-            system("pause");
+            cout << "* La columna debe estar entre A y H." << endl;
         }
         else if (duplicate) {
-            cout << "* Dos fichas no pueden estar en la misma posicion";
+            cout << "* Dos fichas no pueden estar en la misma posicion." << endl;
+        }
+        else if (sizeError) {
+            cout << "* La entrada no puede tener mas de 2 caracteres." << endl;
         }
 
         cout << "\n";
+        system("pause");
         return false;
     }
 
