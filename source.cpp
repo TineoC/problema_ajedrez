@@ -1,6 +1,10 @@
 #include <iostream>
+#include <algorithm>
 #include <string>
-#include <boost/algorithm/string.hpp>
+
+using std::cout; using std::string;
+using std::endl; using std::cin;
+using std::transform; using std::toupper;
 
 using namespace std;
 
@@ -27,11 +31,18 @@ void bienvenida();
 void tablero();
 void entradas();
 
+string upperString(string s)
+{
+    transform(s.begin(), s.end(), s.begin(),
+                   [](unsigned char c){ return toupper(c); });
+    return s;
+}
+
 bool validPosition(string position, string positionTwo, string positionThree) {
 
-    boost::to_upper(position);
-    boost::to_upper(positionTwo);
-    boost::to_upper(positionThree);
+    position = upperString(position);
+    positionTwo = upperString(positionTwo);
+    positionThree = upperString(positionThree);
 
     // Condicion 1. Estar en el tablero.
 
@@ -48,24 +59,18 @@ bool validPosition(string position, string positionTwo, string positionThree) {
     bool duplicate = position == positionTwo || position == positionThree;
 
     if (badRow || badColumn || duplicate) {
-        cout << "Entrada Invalida!!" << endl;
+        cout << "ERROR: Entrada Invalida!!" << endl;
         
         if (badRow) {
-            cout << "La fila debe estar entre 1 y 8" << endl;
+            cout << "* La fila debe estar entre 1 y 8" << endl;
             system("pause");
         }
         else if (badColumn) {
-            cout << "La columna debe estar entre A y H" << endl;
+            cout << "* La columna debe estar entre A y H" << endl;
             system("pause");
         }
         else if (duplicate) {
-            cout << "Dos fichas no pueden estar en la misma posicion";
-
-            // cout << "La torre uno esta en la torre dos";
-
-            // cout << "La reina esta en la torre uno";
-
-            // cout << "La reina esta en la torre dos";
+            cout << "* Dos fichas no pueden estar en la misma posicion";
         }
 
         cout << "\n";
