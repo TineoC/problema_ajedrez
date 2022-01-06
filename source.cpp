@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 
@@ -25,26 +27,27 @@ void bienvenida();
 void tablero();
 void entradas();
 
-bool validPosition(string position, string pieceOne = "", string pieceTwo = "") {
+bool validPosition(string position, string positionTwo, string positionThree) {
 
-    // - Extraer la fila y columna de la entrada en position
+    boost::to_upper(position);
+    boost::to_upper(positionTwo);
+    boost::to_upper(positionThree);
+
+    // Condicion 1. Estar en el tablero.
+
+        // - Extraer la fila y columna de la entrada en position
+    
     char row = position[0];
-    char column = toupper(position[1]);
+    char column = position[1];
 
-    // - Extraer la fila y columna de la pieceOne y pieceTwo (si hay)
-    if (pieceOne != "") {
-        cout << pieceOne;
-    }
+    bool badRow = row <= 48 || row >= 57; // La fila esta entre 1 y 8 (En codigo ASCII)
+    bool badColumn = column <= 64 || column >= 73; // La fila esta entre A y H (En codigo ASCII)
 
-    if (pieceTwo != "") {
-        cout << pieceTwo;
-    }
+    // Condicion 2. No ser la posicion de otra ficha.
 
-    bool badRow = row <= 48 || row >= 57;
-    bool badColumn = column <= 64 || column >= 73;
-    bool duplicate;
+    bool duplicate = position == positionTwo || position == positionThree;
 
-    if (badRow || badColumn) {
+    if (badRow || badColumn || duplicate) {
         cout << "Entrada Invalida!!" << endl;
         
         if (badRow) {
@@ -55,8 +58,14 @@ bool validPosition(string position, string pieceOne = "", string pieceTwo = "") 
             cout << "La columna debe estar entre A y H" << endl;
             system("pause");
         }
-        else if (pieceOne != "") {
-            cout << pieceOne << endl;
+        else if (duplicate) {
+            cout << "Dos fichas no pueden estar en la misma posicion";
+
+            // cout << "La torre uno esta en la torre dos";
+
+            // cout << "La reina esta en la torre uno";
+
+            // cout << "La reina esta en la torre dos";
         }
 
         cout << "\n";
@@ -67,10 +76,19 @@ bool validPosition(string position, string pieceOne = "", string pieceTwo = "") 
 }
 
 int main() {
+
+    // Vista de bienvenida
     bienvenida();
 
-    // Validad entrada
-    entradas();
+    // Imprime el tablero
+
+    // Se piden entradas
+    // Las torres y la reina
+    // Se validan las entradas *******
+
+    // Se imprimen las fichas en sus posiciones en el tablero
+
+    // Se imprimen las posibles jugadas en el tablero
 }
 
 void bienvenida() {
@@ -93,7 +111,10 @@ void bienvenida() {
 
     opcion = toupper(opcion);
 
-    if (opcion == 'Y') tablero();
+    if (opcion == 'Y') {
+        tablero();
+        entradas();
+    } 
     else return;
     
 }
@@ -103,15 +124,17 @@ void tablero() {
 
     cout << "Tablero:\n\n";
 
-    int length = 8,width = 8, row, column;
+    int length = 8, width = 8, row, column;
+
+    // string tablero[length][width];
 
     // * IMPRIMIR FILAS Y COLUMNAS DEL TABLERO *
 
     for(row = 0; row < length; row++)
     {
         int index = 0;
-        while(index < 3) {
-            if (index == 1) {
+        while(index < 1) {
+            if (index == 0) {
                 cout << row + 1 << ".: ";
             } else {
                 cout << "    ";
@@ -119,12 +142,7 @@ void tablero() {
 
             for(column = 0; column < width; column++)
             {
-                if((row + column) % 2 == 0) {
-                    cout << "[XXX]";
-                }
-                else {
-                    cout << "[   ]";
-                }
+                cout << "[ ]";
             }
             cout << "\n";
 
@@ -136,11 +154,11 @@ void tablero() {
 
     int index = 0;
 
-    cout << "\n  ";
+    cout << "\n   ";
 
     while(index < 40) {
-        if (index % 4 == 0) {
-            switch(index/4) {
+        if (index % 2 == 0) {
+            switch(index/2) {
                 case 1:
                     cout << "A";
                     break;
@@ -181,18 +199,18 @@ void tablero() {
 
 void entradas() {
     string torreUno, torreDos, reina;
-    
+
     do {
         cout << "Ingrese la posicion de la primera torre: ";
         cin >> torreUno;
 
-    } while (!validPosition(torreUno));
+    } while (!validPosition(torreUno, "", ""));
 
     do {
         cout << "Ingrese la posicion de la segunda torre: ";
         cin >> torreDos;
 
-    } while (!validPosition(torreDos));
+    } while (!validPosition(torreDos, torreUno, ""));
 
     do {
         cout << "Ingrese la posicion de la reina: ";
